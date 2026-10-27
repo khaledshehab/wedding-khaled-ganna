@@ -143,6 +143,11 @@ main{position:relative;z-index:1;max-width:460px;margin-inline:auto}
 .msg{margin:12px 0 0;min-height:1.4em;font-size:.95rem;color:#ffb89a}
 .msg a{color:var(--copper-l)}
 .done{padding:10px 0 4px}
+.cal{margin-top:18px;padding-top:16px;border-top:1px dashed rgba(247,237,220,.3)}
+.cal-t{margin:0 0 10px;font-size:.95rem;color:var(--muted)}
+.cal-b{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cal-b .btn{padding:12px 8px;font-size:.95rem;font-family:inherit;cursor:pointer;color:inherit}
+.cal-b .btn.main{color:#2a1608}
 .done b{display:block;font-family:var(--ruq);font-size:1.6rem;color:var(--copper-l);margin-bottom:6px}
 /* sound button */
 .snd{position:fixed;z-index:60;top:calc(14px + env(safe-area-inset-top,0px));left:max(14px,env(safe-area-inset-left,0px));width:46px;height:46px;border-radius:50%;border:1px solid rgba(247,237,220,.45);background:rgba(8,18,10,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--cream);display:grid;place-items:center;cursor:pointer;padding:0}
@@ -263,7 +268,15 @@ body.wait:not(.go) .in,body.wait:not(.go) .vine .stem,body.wait:not(.go) .vine .
         <button class="send" id="sendbtn" type="submit">تأكيد</button>
         <p class="msg" id="msg" role="status"></p>
       </form>
-      <div class="done" id="done" hidden><b id="dt"></b><span id="dmsg" style="display:block;white-space:pre-line;line-height:1.8"></span></div>
+      <div class="done" id="done" hidden><b id="dt"></b><span id="dmsg" style="display:block;white-space:pre-line;line-height:1.8"></span>
+        <div class="cal" id="cal" hidden>
+          <p class="cal-t">ضيف الفرح في تقويمك</p>
+          <div class="cal-b">
+            <a class="btn main" id="gcal" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M12 13v4M10 15h4"/></svg>Google</a>
+            <button class="btn alt" id="ics" type="button"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M12 13v4M10 15h4"/></svg>آيفون وغيره</button>
+          </div>
+        </div>
+      </div>
     </section>
     <div class="cta in" style="--i:8">
       <a class="btn main" href="https://www.google.com/maps/dir/?api=1&destination=30.1277465,31.1929472" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>اتجاهات الطريق للقاعة</a>
@@ -343,6 +356,7 @@ body.wait:not(.go) .in,body.wait:not(.go) .vine .stem,body.wait:not(.go) .vine .
     document.getElementById('dt').textContent=(yes?'شكرًا يا ':'هنفتقدك يا ')+name+(yes?' \uD83E\uDD0E':' \uD83E\uDD0D');
     document.querySelector('.rsvp .sub').hidden=true;
     document.getElementById('dmsg').textContent=yes?'وصلنا ردك، ونشوفك يوم الفرح.\nما تتأخرش علينا!':'ربنا يسعدك ونتمنى تكون معانا بقلبك';
+    document.getElementById('cal').hidden=!yes;
     f.hidden=true;document.getElementById('done').hidden=false;
   }
   try{var sv=JSON.parse(localStorage.getItem(KEY)||'null');if(sv&&sv.n)showDone(sv.n,sv.a==='أيوه هحضر')}catch(e){}
@@ -454,6 +468,26 @@ body.wait:not(.go) .in,body.wait:not(.go) .vine .stem,body.wait:not(.go) .vine .
     else if(playing&&wantOn){audio.play().catch(function(){});if(ctx)ctx.resume()}
   });
   arm();ui();attempt();
+})();
+
+/* Add to calendar: Fri 27 Nov 2026, 4 to 6 pm Cairo time (UTC+2) */
+(function(){
+  var TITLE='فرح خالد وچنة',PLACE='راستك جاردن - فيلا سعودي',MAP='https://maps.app.goo.gl/YRwjbkEyfLeJ37Pe8',START='20261127T140000Z',END='20261127T160000Z';
+  var DESC='حفل زفاف خالد وچنة. Dress code: Brown. الموقع: '+MAP;
+  var g=document.getElementById('gcal');
+  g.href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(TITLE)+'&dates='+START+'/'+END+'&details='+encodeURIComponent(DESC)+'&location='+encodeURIComponent(PLACE);
+  function esc(t){return t.replace(/\\/g,'\\\\').replace(/,/g,'\\,').replace(/;/g,'\\;').replace(/\n/g,'\\n')}
+  document.getElementById('ics').addEventListener('click',function(){
+    var L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Khaled and Ganna//Wedding//AR','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT',
+      'UID:khaled-ganna-20261127@wedding','DTSTAMP:20261001T000000Z','DTSTART:'+START,'DTEND:'+END,
+      'SUMMARY:'+esc(TITLE),'LOCATION:'+esc(PLACE),'DESCRIPTION:'+esc(DESC),'URL:'+MAP,
+      'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY','DESCRIPTION:بكرة فرح خالد وچنة','END:VALARM',
+      'BEGIN:VALARM','TRIGGER:-PT3H','ACTION:DISPLAY','DESCRIPTION:فرح خالد وچنة النهارده','END:VALARM',
+      'END:VEVENT','END:VCALENDAR'];
+    var blob=new Blob([L.join('\r\n')],{type:'text/calendar;charset=utf-8'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='khaled-ganna-wedding.ics';
+    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1500);
+  });
 })();
 </script>
 </body>
