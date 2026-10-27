@@ -328,7 +328,8 @@ main{position:relative;z-index:1;max-width:460px;margin-inline:auto}
   document.getElementById('plus').onclick=function(){setN(n+1)};
   var KEY='kg_rsvp_v1';
   function showDone(name,yes){
-    document.getElementById('dt').textContent=(yes?'شكرًا يا ':'هنفتقدك يا ')+name;
+    document.getElementById('dt').textContent=(yes?'شكرًا يا ':'هنفتقدك يا ')+name+(yes?' \uD83E\uDD0E':' \uD83E\uDD0D');
+    document.querySelector('.rsvp .sub').hidden=true;
     document.getElementById('dmsg').textContent=yes?'وصلنا ردك، ونشوفك يوم الفرح.\nما تتأخرش علينا!':'ربنا يسعدك ونتمنى تكون معانا بقلبك';
     f.hidden=true;document.getElementById('done').hidden=false;
   }
