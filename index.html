@@ -370,7 +370,7 @@ main{position:relative;z-index:1;max-width:460px;margin-inline:auto}
   audio.addEventListener('canplay',function(){if(fileState==='loading')fileState='ok'});
   audio.addEventListener('ended',function(){
     clearTimeout(resumeTimer);
-    resumeTimer=setTimeout(function(){if(playing&&wantOn)audio.play().catch(function(){})},6000);
+    resumeTimer=setTimeout(function(){if(playing&&wantOn)audio.play().catch(function(){})},500);
   });
   audio.src='sound.mp3';
 
