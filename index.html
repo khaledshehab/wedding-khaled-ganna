@@ -254,7 +254,7 @@ main{position:relative;z-index:1;max-width:460px;margin-inline:auto}
         <button class="send" id="sendbtn" type="submit">تأكيد</button>
         <p class="msg" id="msg" role="status"></p>
       </form>
-      <div class="done" id="done" hidden><b>شكرًا يا <span id="dn"></span></b><span id="dmsg">وصلنا ردك، نورتنا.</span><small style="display:block;margin-top:10px;color:var(--muted)">تم تسجيل ردك مرة واحدة. لو عايز تعدله كلم العروسين.</small></div>
+      <div class="done" id="done" hidden><b id="dt"></b><span id="dmsg" style="display:block;white-space:pre-line;line-height:1.8"></span></div>
     </section>
     <div class="cta in" style="--i:8">
       <a class="btn main" href="https://www.google.com/maps/dir/?api=1&destination=30.1277465,31.1929472" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>اتجاهات الطريق للقاعة</a>
@@ -328,8 +328,8 @@ main{position:relative;z-index:1;max-width:460px;margin-inline:auto}
   document.getElementById('plus').onclick=function(){setN(n+1)};
   var KEY='kg_rsvp_v1';
   function showDone(name,yes){
-    document.getElementById('dn').textContent=name;
-    document.getElementById('dmsg').textContent=yes?'وصلنا ردك، ونشوفك يوم الفرح.':'وصلنا ردك، ربنا يسعدك.';
+    document.getElementById('dt').textContent=(yes?'شكرًا يا ':'هنفتقدك يا ')+name;
+    document.getElementById('dmsg').textContent=yes?'وصلنا ردك، ونشوفك يوم الفرح.\nما تتأخرش علينا!':'ربنا يسعدك ونتمنى تكون معانا بقلبك';
     f.hidden=true;document.getElementById('done').hidden=false;
   }
   try{var sv=JSON.parse(localStorage.getItem(KEY)||'null');if(sv&&sv.n)showDone(sv.n,sv.a==='أيوه هحضر')}catch(e){}
